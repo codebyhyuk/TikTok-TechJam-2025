@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 
 
 MAX_WORKERS = 20
-# DATA_FILE = "final_data_sampled.csv"
-DATA_FILE = "data_check.csv"
+DATA_FILE = "final_data_sampled.csv"
+POLICY_FILE = "policy.md"
 
 
 # configure OPENAI_API
@@ -20,7 +20,7 @@ client = OpenAI(api_key=api_key)
 
 # read final data and policy
 df = pd.read_csv(DATA_FILE)
-with open("policy.md", "r", encoding="utf-8") as f:
+with open(POLICY_FILE, "r", encoding="utf-8") as f:
     policy_text = f.read()
 
 
