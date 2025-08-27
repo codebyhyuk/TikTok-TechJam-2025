@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 
 
 MAX_WORKERS = 20
+# DATA_FILE = "final_data_sampled.csv"
+DATA_FILE = "data_check.csv"
 
 
 # configure OPENAI_API
@@ -17,14 +19,14 @@ client = OpenAI(api_key=api_key)
 
 
 # read final data and policy
-df = pd.read_csv("final_data_sampled.csv")
+df = pd.read_csv(DATA_FILE)
 with open("policy.md", "r", encoding="utf-8") as f:
     policy_text = f.read()
 
 
 # prompt function
 def make_prompt(row):
-    row_text = "\n".join([f"{col}: {row[col]}" for col in df.columns])
+    row_text = "\n".join([f"{col}: {row[col]}" for col in row.index])
     return f"""
 {policy_text}
 
@@ -68,7 +70,7 @@ def main():
             idx, label = future.result()
             df.at[idx, "policy_label"] = label
 
-    df.to_csv("final_data_labeled.csv")
+    df.to_csv("final_data_labeled.csv", index=False)
     end_time = time.time()
     print(f"Labeling complete! Elapsed time: {end_time - start_time:.2f} seconds")
 
