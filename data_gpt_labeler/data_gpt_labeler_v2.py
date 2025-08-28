@@ -7,21 +7,26 @@ from dotenv import load_dotenv
 
 
 MAX_WORKERS = 10
-DATA_FILE = "final_data.csv"
-POLICY_FILE = "policy.md"
 REQUEST_DELAY = 1.5
+
+INPUT_FILE = "final_data_1.csv" # change number after underbar in [1,8]
+OUTPUT_FILE = "final_data_labeled_1.csv" # change number after underbar correspondingly
+
+POLICY_FILE = "policy.md"
+OPENAI_API_KEY = "OPENAI_API_KEY_HJ"    #  OPENAI_API_KEY_HJ, OPENAI_API_KEY_HS, OPENAI_API_KEY_YM  #
+
 
 
 # configure OPENAI_API
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = os.getenv(OPENAI_API_KEY)
 if not api_key:
     raise ValueError("OPENAI_API_KEY not found in environment")
 client = OpenAI(api_key=api_key)
 
 
 # read final data and policy
-df = pd.read_csv(DATA_FILE)
+df = pd.read_csv(INPUT_FILE)
 with open(POLICY_FILE, "r", encoding="utf-8") as f:
     policy_text = f.read()
 
@@ -73,7 +78,7 @@ def main():
             idx, label = future.result()
             df.at[idx, "policy_label"] = label
 
-    df.to_csv("final_data_labeled.csv", index=False)
+    df.to_csv(OUTPUT_FILE, index=False)
     end_time = time.time()
     print(f"Labeling complete! Elapsed time: {end_time - start_time:.2f} seconds")
 
