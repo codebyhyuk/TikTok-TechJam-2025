@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 
 MAX_WORKERS = 20
-DATA_FILE = "final_data_sampled.csv"
+DATA_FILE = "final_data.csv"
 POLICY_FILE = "policy.md"
 
 
@@ -55,7 +55,7 @@ def label_row(idx, row):
         return idx, label
     except Exception as e:
         print(f"Error at row {idx}: {e}", flush=True)
-        return idx, "0"
+        return idx, None
 
 
 # multithreading main
