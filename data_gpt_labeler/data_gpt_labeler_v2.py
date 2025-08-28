@@ -1,13 +1,15 @@
 import os
+import time
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from openai import OpenAI
 from dotenv import load_dotenv
 
 
-MAX_WORKERS = 20
+MAX_WORKERS = 10
 DATA_FILE = "final_data.csv"
 POLICY_FILE = "policy.md"
+REQUEST_DELAY = 1.5
 
 
 # configure OPENAI_API
@@ -41,6 +43,7 @@ Respond only with 0 (not trustworthy) or 1 (trustworthy).
 def label_row(idx, row):
     prompt = make_prompt(row)
     try:
+        time.sleep(REQUEST_DELAY)
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": prompt}],
