@@ -1,46 +1,58 @@
-
 import pandas as pd
-import nltk
+import numpy as np
+from gensim import corpora
+from gensim.models import LdaModel
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from gensim import corpora
-from gensim.models import LdaModel
-import numpy as np
+import nltk
+nltk.download('wordnet')
 from scipy.spatial.distance import cosine
 import os
 
-def policy_A_similarity(file_path: str) -> list[float]:
-    """
-    This function takes a file path to a CSV file, processes the text data,
-    trains an LDA model, and returns a list of cosine similarity scores
-    between review and business documents for each row.
-    The output is a list of floats between 0 and 1.
-    """
-    # Ensure NLTK data is downloaded
-    for resource in ['punkt', 'stopwords', 'wordnet']:
+def download_nltk_data():
+    """Downloads necessary NLTK data if not already present."""
+    packages = ['punkt', 'stopwords', 'wordnet']
+    for package in packages:
         try:
-            nltk.data.find(f'corpora/{resource}' if resource != 'punkt' else f'tokenizers/{resource}')
-        except nltk.downloader.DownloadError:
-            nltk.download(resource)
+            if package == 'punkt':
+                nltk.data.find(f'tokenizers/{package}')
+            else:
+                nltk.data.find(f'corpora/{package}')
+        except LookupError:
+            nltk.download(package)
 
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"File not found: {file_path}")
+def policy_A_feature_generation(df: pd.DataFrame) -> pd.Series:
+    """
+    Modularized process from policy_A.ipynb to generate a similarity feature.
 
-    df = pd.read_csv(file_path)
+    This function takes a DataFrame, processes the text data to create
+    review and business documents, trains an LDA model on the corpus,
+    and then calculates the cosine similarity between the LDA vectors
+    of the review and business documents for each row.
 
-    # Data cleaning and feature engineering
-    df['review_document'] = df['text'].astype(str)
-    df['business_document'] = (df['business_name'].fillna('') + ' ' + 
-                               df['business_category'].fillna('') + ' ' + 
-                               df['business_description'].fillna(''))
+    Args:
+        df (pd.DataFrame): Input DataFrame with 'text', 'business_name',
+                           'business_category', and 'business_description' columns.
+
+    Returns:
+        pd.Series: A 1-by-n pandas Series where n is the number of rows
+                   in the input DataFrame. Each element is a 0-1 scale
+                   feature representing the similarity score.
+    """
+    download_nltk_data()
+
+    df_processed = df.copy()
+    df_processed['review_document'] = df_processed['text'].astype(str)
+    df_processed['business_document'] = (df_processed['business_name'].fillna('') + ' ' +
+                                       df_processed['business_category'].fillna('') + ' ' +
+                                       df_processed['business_description'].fillna(''))
 
     corpus = []
-    for index, row in df.iterrows():
+    for index, row in df_processed.iterrows():
         corpus.append(row['review_document'])
         corpus.append(row['business_document'])
 
-    # Text preprocessing
     stop_words = set(stopwords.words('english'))
     lemmatizer = WordNetLemmatizer()
 
@@ -53,11 +65,10 @@ def policy_A_similarity(file_path: str) -> list[float]:
     dictionary = corpora.Dictionary(processed_corpus)
     bow_corpus = [dictionary.doc2bow(text) for text in processed_corpus]
 
-    # LDA model training
     lda_model = LdaModel(bow_corpus, num_topics=100, id2word=dictionary, passes=15)
 
-    def get_lda_vector(text, lda_model, dictionary, preprocess_text_func):
-        processed_text = preprocess_text_func(text)
+    def get_lda_vector(text):
+        processed_text = preprocess_text(text)
         bow_vector = dictionary.doc2bow(processed_text)
         lda_vector = lda_model.get_document_topics(bow_vector, minimum_probability=0.0)
         dense_vector = np.zeros(lda_model.num_topics)
@@ -66,16 +77,36 @@ def policy_A_similarity(file_path: str) -> list[float]:
         return dense_vector
 
     def calculate_cosine_similarity(vec1, vec2):
-        # Handle zero vectors
         if np.all(vec1 == 0) or np.all(vec2 == 0):
             return 0.0
-        return 1 - cosine(vec1, vec2)
+        similarity = 1 - cosine(vec1, vec2)
+        return similarity if not np.isnan(similarity) else 0.0
 
     similarity_scores = []
-    for index, row in df.iterrows():
-        review_vector = get_lda_vector(row['review_document'], lda_model, dictionary, preprocess_text)
-        business_vector = get_lda_vector(row['business_document'], lda_model, dictionary, preprocess_text)
-        similarity_score = calculate_cosine_similarity(review_vector, business_vector)
-        similarity_scores.append(similarity_score)
+    for index, row in df_processed.iterrows():
+        review_vector = get_lda_vector(row['review_document'])
+        business_vector = get_lda_vector(row['business_document'])
+        score = calculate_cosine_similarity(review_vector, business_vector)
+        similarity_scores.append(score)
 
-    return similarity_scores
+    return pd.Series(similarity_scores)
+
+if __name__ == '__main__':
+    # Example usage:
+    # Assumes the script is run from the project root directory
+    file_path = 'data_gpt_labeler/final_data_labeled_1.csv'
+    
+    if not os.path.exists(file_path):
+        print(f"Error: Data file not found at {file_path}. Make sure you are running this script from the project root.")
+    else:
+        df = pd.read_csv(file_path)
+        # Using a smaller sample for a quick test to avoid long processing time
+        df_sample = df.head(10).copy() 
+        
+        print(f"Loading data from: {file_path}")
+        print(f"Processing a sample of {len(df_sample)} rows...")
+        
+        similarity_series = policy_A_feature_generation(df_sample)
+        
+        print("\nGenerated similarity scores:")
+        print(similarity_series)
