@@ -4,7 +4,7 @@ from textblob import TextBlob
 from langdetect import detect, LangDetectException
 from sentence_transformers import SentenceTransformer, util
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 import time
 
 # Load the model once
@@ -71,14 +71,14 @@ def calculate_interpretability_scores_for_df(df: pd.DataFrame, n_workers: int) -
     Returns:
         A pandas Series with the interpretability scores.
     """
-    with ThreadPoolExecutor(max_workers=n_workers) as executor:
+    with ProcessPoolExecutor(max_workers=n_workers) as executor:
         results = list(executor.map(calculate_interpretability_score, df['text']))
         
     return pd.Series(results, index=df.index)
 
 if __name__ == '__main__':
     # Example usage:
-    file_path = '../data_gpt_labeler/final_data_labeled_1.csv'
+    file_path = '/Users/yumin/Documents/GitHub/TikTok-TechJam-2025/data_gpt_labeler/final_data_labeled_1.csv'
     df = pd.read_csv(file_path)
     
     # For demonstration, using a smaller sample
