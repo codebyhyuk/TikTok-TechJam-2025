@@ -2,8 +2,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import torch.nn.functional as F
 import pandas as pd
-import numpy as np
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 
 
 MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -12,7 +11,7 @@ model = AutoModelForSequenceClassification.from_pretrained(MODEL)
 
 
 def roberta_sentiment_score(text: str):
-    inputs = tokenizer(text, return_tensors="pt", truncation=True)
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
     with torch.no_grad():
         logits = model(**inputs).logits
     probs = F.softmax(logits, dim=-1).numpy()[0]
@@ -40,6 +39,6 @@ def compute_consistency_for_row(row):
 
 
 def compute_consistency_scores(df, max_workers=8):
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
         results = list(executor.map(compute_consistency_for_row, [row for _, row in df.iterrows()]))
     return pd.Series(results, index=df.index)
