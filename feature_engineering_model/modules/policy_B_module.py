@@ -1,4 +1,3 @@
-
 import pandas as pd
 import nltk
 from nltk.tokenize import word_tokenize
@@ -7,7 +6,7 @@ from nltk.chunk import ne_chunk
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 import math
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 
 def download_nltk_resources():
     """Download necessary NLTK resources."""
@@ -83,6 +82,11 @@ def process_row(row, vectorizer, weights):
     
     return specificity_score
 
+def process_row_wrapper(args):
+    """Unpacks arguments and calls the process_row function."""
+    row, vectorizer, weights = args
+    return process_row(row, vectorizer, weights)
+
 def calculate_specificity_score(df: pd.DataFrame, n_workers: int) -> pd.Series:
     """
     Calculates the specificity score for each review in the DataFrame.
@@ -106,15 +110,18 @@ def calculate_specificity_score(df: pd.DataFrame, n_workers: int) -> pd.Series:
         'tfidf_score_norm': 0.2,
         'review_length_norm': 0.2
     }
+    with ProcessPoolExecutor(max_workers=n_workers) as executor:
+        data_for_processing = [(row, tfidf_vectorizer, weights) for _, row in df.iterrows()]
     
-    with ThreadPoolExecutor(max_workers=n_workers) as executor:
-        results = list(executor.map(lambda row: process_row(row, tfidf_vectorizer, weights), [row for _, row in df.iterrows()]))
+        # Pass the wrapper function and the iterable of tuples to executor.map().
+        # The wrapper function receives one tuple at a time and unpacks it.
+        results = list(executor.map(process_row_wrapper, data_for_processing))
         
     return pd.Series(results, index=df.index)
 
 if __name__ == '__main__':
     # Example usage:
-    file_path = '../data_gpt_labeler/final_data_labeled_1.csv'
+    file_path = '/Users/yumin/Documents/GitHub/TikTok-TechJam-2025/data_gpt_labeler/final_data_labeled_1.csv'
     df = pd.read_csv(file_path)
     
     # For demonstration, using a smaller sample
