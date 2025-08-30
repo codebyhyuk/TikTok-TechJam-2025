@@ -61,9 +61,9 @@ The project is structured as a pipeline. You can reproduce the results by runnin
 
 1.  **Data Labeling:**
     - Navigate to the `data_gpt_labeler` directory.
-    - Run the `data_preprocessing.ipynb` notebook, based on user specified dataset from (link)[https://mcauleylab.ucsd.edu/public_datasets/gdrive/googlelocal/] to preprocess the data.
+    - Run the `data_preprocessing.ipynb` notebook, based on user specified dataset from [link](https://mcauleylab.ucsd.edu/public_datasets/gdrive/googlelocal/) to preprocess the data.
     - Run the `data_gpt_labeler_v2.py` script to label the data using GPT. This will generate the labeled datasets in the `labeled_datasets` directory.
-    - ***may require some absolute paths be updated with relative paths***
+    - *may require some absolute paths be updated with relative paths*
 
 2.  **Feature Engineering:**
     - Navigate to the `feature_engineering_model` directory.
