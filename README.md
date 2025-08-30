@@ -67,3 +67,10 @@ The project is structured as a pipeline. You can reproduce the results by runnin
     - Navigate to the `classification_model` directory.
     - The `final_data_featured_filtered.csv` file is the final dataset used for classification.
     - You can run any of the notebooks (`MLP.ipynb`, `RF.ipynb`, `SVM.ipynb`, `XGB.ipynb`) to train and evaluate the corresponding classification model.
+
+## Team Member Contribution
+Lee Hyunseung
+
+Park Yumin
+
+Yoon Hyukjin
