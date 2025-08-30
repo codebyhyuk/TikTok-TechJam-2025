@@ -83,7 +83,7 @@ def compute_policy_g_series_processed(
     df: pd.DataFrame,
     text_col: str = "text",
     model_name: str = "unbiased",
-    max_workers: int = 8,
+    max_workers: int = 2,
     field: str = "S_toxicity",  # keep default consistent with docstring
 ) -> pd.Series:
     details = compute_policy_g_details_processed(
