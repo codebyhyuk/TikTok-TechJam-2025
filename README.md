@@ -79,7 +79,7 @@ The policies defined in project are:
     ```
 
 ## How to Reproduce Results
-Simply run the `final_ml_pipeline.ipynb` from top to bottom to reproduce the results displayed in the video demonstration. 
+Simply run the `final_ml_pipeline.ipynb` from top to bottom to reproduce the results displayed in the video demonstration ([YouTube Link](https://youtu.be/sQ63Y8omDFU)). 
 
 For a more thorough understanding of the implementation, follow the procedure delineated below:
 
