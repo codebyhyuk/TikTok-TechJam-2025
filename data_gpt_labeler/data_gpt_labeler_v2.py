@@ -7,13 +7,13 @@ from dotenv import load_dotenv
 
 
 MAX_WORKERS = 10
-REQUEST_DELAY = 1.5
+REQUEST_DELAY = 1.8
 
-INPUT_FILE = "final_data_1.csv" # change number after underbar in [1,8]
-OUTPUT_FILE = "final_data_labeled_1.csv" # change number after underbar correspondingly
+INPUT_FILE = "/Users/evan/Documents/Projects/TikTok-TechJam-2025/data_gpt_labeler/filtered_datasets/final_data_5_filtered.csv" # change number after underbar in [1,8]
+OUTPUT_FILE = "final_data_labeled_5.csv" # change number after underbar correspondingly
 
 POLICY_FILE = "policy.md"
-OPENAI_API_KEY = "OPENAI_API_KEY_HJ"    #  OPENAI_API_KEY_HJ, OPENAI_API_KEY_HS, OPENAI_API_KEY_YM  #
+OPENAI_API_KEY = "OPENAI_API_KEY_HS"    #  OPENAI_API_KEY_HJ, OPENAI_API_KEY_HS, OPENAI_API_KEY_YM  #
 
 
 
