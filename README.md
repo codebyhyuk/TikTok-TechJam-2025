@@ -18,19 +18,17 @@ This project is divided into three main parts:
 
 The policies defined in project are:
 
-A. **Data Labeling:** Using GPT API to label the raw Google review data based on a defined policy for supervised learning.
+- **Policy A: Business Category/Name & Review Content Alignment**
+- **Policy B: Overly Generic Sentiment with No Substance**
+- **Policy C: Minimum Review Content Length**
+- **Policy D: Nonsensical Content**
+    - **Policy D1: Non-Alphanumeric**
+    - **Policy D2: No Meaning**
+- **Policy E: Do Ratings Match the Sentiment of Text Review**
+- **Policy F: Advertisement-like Review Filter**
+- **Policy G: Excessive Use of Profanity/Hate Speech**
 
-B.  **Feature Engineering:** Extracting features from the labeled data using different pre-trained models for certain specific policies.
-
-C.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
-
-D.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
-
-E.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
-
-F.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
-
-G.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+#### More Information can be found in [Google Doc](https://docs.google.com/document/d/1tCkZP4Z8YLQJ1Ee284itrMSlIuicsvdhtb2rCdfqbUU/edit?usp=sharing)
 
 ## Model Validation Score Result
 ![MLP Validation Score Result](images/MLP_performance_scores.png)
