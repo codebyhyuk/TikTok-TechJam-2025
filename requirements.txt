@@ -3,7 +3,7 @@ pandas
 matplotlib
 tensorflow
 scikit-learn
-imbalanced-learn
+imblearn
 seaborn
 xgboost
 openai
