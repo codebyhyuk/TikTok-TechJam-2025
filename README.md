@@ -1,13 +1,39 @@
 # TikTok TechJam 2025
-
-A project for the TikTok TechJam 2025 Hackathon. This project aims to classify users based on their data.
+### Track 1. Filtering the Noise: ML for Trustworthy Location Reviews
+This project develops a comprehensive machine learning pipeline designed to assess the trustworthiness of location-based Google reviews. 
 
 ## Project Overview
+![Model Architecture](images/Model_Architecture.png)
+- To address this challenge, we designed a machine learning pipeline grounded in a seven-policy framework. 
+- The system first applies rule-based filters to automatically flag reviews that explicitly violate certain criteria (Policy C, D1, F). 
+- For the remaining dimensions (Policy A, B, D2, E, G), feature scores are extracted using pre-trained language models such as HuggingFace transformers and Detoxify. 
+- These policy-aligned features are then combined and fed into a multi-layer perceptron (MLP), which learns to classify reviews as trustworthy (1) or untrustworthy (0).
+- This layered framework blends deterministic rules with learned representations, ensuring both precision and adaptability in detecting low-quality or deceptive reviews.
 
 This project is divided into three main parts:
-1.  **Data Labeling:** Using GPT to label the raw data based on a defined policy.
-2.  **Feature Engineering:** Extracting meaningful features from the labeled data using various policies.
-3.  **Classification:** Training and evaluating different classification models on the engineered features.
+
+1.  **Data Labeling:** Using GPT API to label the raw Google review data based on a defined policy for supervised learning.
+2.  **Feature Engineering:** Extracting features from the labeled data using different pre-trained models for certain specific policies.
+3.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+
+The policies defined in project are:
+
+A. **Data Labeling:** Using GPT API to label the raw Google review data based on a defined policy for supervised learning.
+
+B.  **Feature Engineering:** Extracting features from the labeled data using different pre-trained models for certain specific policies.
+
+C.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+
+D.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+
+E.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+
+F.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+
+G.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
+
+## Model Validation Score Result
+![MLP Validation Score Result](images/MLP_performance_scores.png)
 
 ## Repository Structure
 
