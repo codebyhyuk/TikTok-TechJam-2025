@@ -50,7 +50,7 @@ This project is divided into three main parts:
     ```
 
 4.  **Set up OpenAI API Key:**
-    The data labeling script uses the OpenAI API. You need to set up your API key as an environment variable:
+    The data labeling script for the generation of training dataset uses the OpenAI API. You need to set up your API key as an environment variable:
     ```bash
     export OPENAI_API_KEY='your-api-key'
     ```
@@ -61,8 +61,9 @@ The project is structured as a pipeline. You can reproduce the results by runnin
 
 1.  **Data Labeling:**
     - Navigate to the `data_gpt_labeler` directory.
-    - Run the `data_preprocessing.ipynb` notebook to preprocess the data.
+    - Run the `data_preprocessing.ipynb` notebook, based on user specified dataset from (link)[https://mcauleylab.ucsd.edu/public_datasets/gdrive/googlelocal/] to preprocess the data.
     - Run the `data_gpt_labeler_v2.py` script to label the data using GPT. This will generate the labeled datasets in the `labeled_datasets` directory.
+    - ***may require some absolute paths be updated with relative paths***
 
 2.  **Feature Engineering:**
     - Navigate to the `feature_engineering_model` directory.

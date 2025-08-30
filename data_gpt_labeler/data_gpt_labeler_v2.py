@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 MAX_WORKERS = 10
 REQUEST_DELAY = 1.8
 
-INPUT_FILE = "/Users/evan/Documents/Projects/TikTok-TechJam-2025/data_gpt_labeler/filtered_datasets/final_data_5_filtered.csv" 
+INPUT_FILE = "filtered_datasets/final_data_5_filtered.csv" 
 OUTPUT_FILE = "final_data_labeled_5.csv" 
 
 POLICY_FILE = "policy.md"
