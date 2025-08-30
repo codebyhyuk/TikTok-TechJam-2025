@@ -12,7 +12,7 @@ This project develops a comprehensive machine learning pipeline designed to asse
 
 This project is divided into three main parts:
 
-1.  **Data Labeling:** Using GPT API to label the raw Google review data based on a defined policy for supervised learning.
+1.  **Data Labeling:** Using GPT API to label the raw Google review data based on a defined policy for supervised learning, leveraging prompt engineering.
 2.  **Feature Engineering:** Extracting features from the labeled data using different pre-trained models for certain specific policies.
 3.  **Classification:** Training and evaluating different classification models on the engineered features and develop one final model with highest performance. 
 
@@ -24,7 +24,7 @@ The policies defined in project are:
 - **Policy D: Nonsensical Content**
     - **Policy D1: Non-Alphanumeric**
     - **Policy D2: No Meaning**
-- **Policy E: Do Ratings Match the Sentiment of Text Review**
+- **Policy E: Do Ratings Match the Sentiment of Text Review?**
 - **Policy F: Advertisement-like Review Filter**
 - **Policy G: Excessive Use of Profanity/Hate Speech**
 
