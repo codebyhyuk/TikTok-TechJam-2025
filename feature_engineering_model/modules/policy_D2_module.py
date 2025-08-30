@@ -7,30 +7,27 @@ import numpy as np
 from concurrent.futures import ProcessPoolExecutor
 import time
 
-# Load the model once
+# load the model once
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 def calculate_interpretability_score(text):
-    """
-    Calculates the interpretability score for a given text.
-    """
     if not isinstance(text, str) or not text.strip():
         return 0.0
 
-    # 1. Language Detection
+    # language Detection
     try:
         if detect(text) != 'en':
             return 0.0
     except LangDetectException:
         return 0.0
 
-    # Using TextBlob for sentence tokenization and POS tagging
+    # using TextBlob for sentence tokenization and POS tagging
     try:
         blob = TextBlob(text)
     except Exception:
         return 0.0
 
-    # 2. Coherence (Sentence Similarity)
+    # coherence (Sentence Similarity)
     sentences = [str(s) for s in blob.sentences]
     if len(sentences) < 2:
         if len(blob.words) < 3:
@@ -51,7 +48,7 @@ def calculate_interpretability_score(text):
     avg_coherence = np.mean(coherence_scores)
     normalized_coherence = (avg_coherence + 1) / 2
 
-    # 3. POS tagging for basic grammar check (as a penalty)
+    # POS tagging for basic grammar check (as a penalty)
     pos_tags = [tag for word, tag in blob.tags]
     has_verb = any(tag.startswith('VB') for tag in pos_tags)
     has_noun = any(tag.startswith('NN') for tag in pos_tags)
@@ -61,16 +58,6 @@ def calculate_interpretability_score(text):
     return normalized_coherence
 
 def calculate_interpretability_scores_for_df(df: pd.DataFrame, n_workers: int) -> pd.Series:
-    """
-    Calculates the interpretability score for each review in the DataFrame.
-
-    Args:
-        df: The input DataFrame with a 'text' column.
-        n_workers: The number of workers for parallel processing.
-
-    Returns:
-        A pandas Series with the interpretability scores.
-    """
     with ProcessPoolExecutor(max_workers=n_workers) as executor:
         results = list(executor.map(calculate_interpretability_score, df['text']))
         
@@ -81,7 +68,7 @@ if __name__ == '__main__':
     file_path = '/Users/yumin/Documents/GitHub/TikTok-TechJam-2025/data_gpt_labeler/final_data_labeled_1.csv'
     df = pd.read_csv(file_path)
     
-    # For demonstration, using a smaller sample
+    # for demonstration, using a smaller sample
     df_sample = df.head(100).copy()
     
     print("Running interpretability score calculation...")
