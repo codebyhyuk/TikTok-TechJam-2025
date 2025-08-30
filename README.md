@@ -80,8 +80,9 @@ The policies defined in project are:
     ```
 
 ## How to Reproduce Results
+Simply run the `final_ml_pipeline.ipynb` from top to bottom to reproduce the results displayed in the video demonstration. 
 
-The project is structured as a pipeline. You can reproduce the results by running the steps in the following order:
+For a more thorough understanding of the implementation, follow the procedure delineated below:
 
 1.  **Data Labeling:**
     - Navigate to the `data_gpt_labeler` directory.
@@ -99,11 +100,8 @@ The project is structured as a pipeline. You can reproduce the results by runnin
     - You can run any of the notebooks (`MLP.ipynb`, `RF.ipynb`, `SVM.ipynb`, `XGB.ipynb`) to train and evaluate the corresponding classification model.
 
 ## Team Member Contribution
-#### Lee Hyunseung
-- 
+[Lee Hyunseung](https://www.linkedin.com/in/hyunseung-lee-0128jte-10627kshs/)
 
-#### Park Yumin
-- 
+[Park Yumin](https://www.linkedin.com/in/yuminpark78/)
 
-#### Yoon Hyukjin
-- 
+[Yoon Hyukjin](https://www.linkedin.com/in/hyukjiny/)
