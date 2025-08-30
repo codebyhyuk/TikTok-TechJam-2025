@@ -190,6 +190,88 @@ def policy_A_feature_generation_v2(df: pd.DataFrame, review: pd.Series) -> float
     print(f"Similarity score: {score:.4f}")
     return score
 
+
+def policy_A_feature_generation_v3(df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.Series:
+    """
+    Trains an LDA model on df_train and calculates similarity scores for all rows in df_test.
+
+    Args:
+        df_train (pd.DataFrame): Training data with 'text', 'business_name',
+                                 'business_category', 'business_description'
+        df_test (pd.DataFrame): Test data with the same columns as df_train
+
+    Returns:
+        pd.Series: Similarity scores for each row in df_test (0.0~1.0)
+    """
+    # --- Step 1: Preprocessing and Training the LDA Model on df_train ---
+    print("Training LDA model on the provided training DataFrame...")
+
+    df_train_proc = df_train.copy()
+    df_train_proc['review_document'] = df_train_proc['text'].astype(str)
+    df_train_proc['business_document'] = (
+        df_train_proc['business_name'].fillna('') + ' ' +
+        df_train_proc['business_category'].fillna('') + ' ' +
+        df_train_proc['business_description'].fillna('')
+    )
+
+    corpus = []
+    for _, row in df_train_proc.iterrows():
+        corpus.append(row['review_document'])
+        corpus.append(row['business_document'])
+
+    stop_words = set(stopwords.words('english'))
+    lemmatizer = WordNetLemmatizer()
+
+    def preprocess_text(text):
+        tokens = word_tokenize(text.lower())
+        return [lemmatizer.lemmatize(w) for w in tokens if w.isalpha() and w not in stop_words]
+
+    processed_corpus = [preprocess_text(doc) for doc in corpus]
+    if not processed_corpus:
+        print("Warning: Training corpus is empty. Cannot train LDA model.")
+        return pd.Series([0.0] * len(df_test), index=df_test.index)
+
+    dictionary = corpora.Dictionary(processed_corpus)
+    bow_corpus = [dictionary.doc2bow(text) for text in processed_corpus]
+
+    lda_model = LdaModel(bow_corpus, num_topics=100, id2word=dictionary, passes=15)
+    print("LDA model training complete.")
+
+    # --- Step 2: Define helpers for scoring ---
+    def get_lda_vector(text):
+        processed_text = preprocess_text(text)
+        bow_vector = dictionary.doc2bow(processed_text)
+        lda_vector = lda_model.get_document_topics(bow_vector, minimum_probability=0.0)
+        dense_vector = np.zeros(lda_model.num_topics)
+        for topic_num, prop_topic in lda_vector:
+            dense_vector[topic_num] = prop_topic
+        return dense_vector
+
+    def calculate_cosine_similarity(vec1, vec2):
+        if np.all(vec1 == 0) or np.all(vec2 == 0):
+            return 0.0
+        similarity = 1 - cosine(vec1, vec2)
+        return similarity if not np.isnan(similarity) else 0.0
+
+    # --- Step 3: Apply to df_test ---
+    print("Calculating similarity scores for df_test...")
+    scores = []
+    for _, review in df_test.iterrows():
+        review_document = str(review['text'])
+        business_document = (
+            str(review['business_name']) + ' ' +
+            str(review['business_category']) + ' ' +
+            str(review['business_description'])
+        )
+        review_vector = get_lda_vector(review_document)
+        business_vector = get_lda_vector(business_document)
+        score = calculate_cosine_similarity(review_vector, business_vector)
+        scores.append(score)
+
+    return pd.Series(scores, index=df_test.index, name="policy_A_score")
+
+
+
 if __name__ == '__main__':
     # Example usage:
     # Assumes the script is run from the project root directory
