@@ -2,8 +2,8 @@
 !.gitignore
 !.gitattributes
 venv/
+venv2/
 .venv/
-requirements.txt
 .DS_Store
 __pycache__/
 *.py[cod]
