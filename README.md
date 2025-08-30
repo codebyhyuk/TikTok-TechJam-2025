@@ -20,9 +20,14 @@ This project is divided into three main parts:
 ├── feature_engineering_model/  # Jupyter notebooks for feature engineering
 │   ├── featured_datasets/      # Datasets with engineered features
 │   └── modules/                # Python modules for feature engineering policies
+├── images/                     # Images for the repository
+│   └── Model Architecture.png  # Model architecture diagram
+├── .gitignore                  # Git ignore file
 ├── final_data_featured_filtered.csv # Final dataset for classification
+├── final_lda_train_data.csv    # Train data for LDA model
+├── final_ml_pipeline.ipynb     # Jupyter notebook for the final ML pipeline
 ├── README.md                   # This file
-└── ...
+└── requirements.txt            # Python dependencies
 ```
 
 ## Setup Instructions
