@@ -281,6 +281,10 @@ def policy_A_feature_generation_v3(df_train: pd.DataFrame, df_test: pd.DataFrame
 
     return pd.Series(similarity_scores)
 
+def ensure_str(x):
+    if isinstance(x, list):
+        return " ".join(map(str, x))  # join list items into a string
+    return str(x) if x is not None else ""
 
 def policy_A_feature_generation_v3(df_train: pd.DataFrame, df_test: pd.DataFrame) -> pd.Series:
     """
@@ -300,9 +304,9 @@ def policy_A_feature_generation_v3(df_train: pd.DataFrame, df_test: pd.DataFrame
     df_train_proc = df_train.copy()
     df_train_proc['review_document'] = df_train_proc['text'].astype(str)
     df_train_proc['business_document'] = (
-        df_train_proc['business_name'].fillna('') + ' ' +
-        df_train_proc['business_category'].fillna('') + ' ' +
-        df_train_proc['business_description'].fillna('')
+        df_train_proc['business_name'].apply(ensure_str) + ' ' +
+        df_train_proc['business_category'].apply(ensure_str) + ' ' +
+        df_train_proc['business_description'].apply(ensure_str)
     )
 
     corpus = []

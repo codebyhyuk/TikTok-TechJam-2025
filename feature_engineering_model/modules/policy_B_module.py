@@ -10,12 +10,14 @@ from concurrent.futures import ProcessPoolExecutor
 
 def download_nltk_resources():
     """Download necessary NLTK resources."""
-    resources = ['punkt', 'averaged_perceptron_tagger', 'maxent_ne_chunker', 'words']
-    for resource in resources:
-        try:
-            nltk.data.find(f'tokenizers/{resource}')
-        except LookupError:
-            nltk.download(resource)
+    nltk.download('punkt')
+    try:
+        nltk.download('punkt_tab')
+    except:
+        print("Could not download 'punkt_tab', continuing without it.")
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('maxent_ne_chunker')
+    nltk.download('words')
 
 def lexical_richness(text):
     if isinstance(text, str):
