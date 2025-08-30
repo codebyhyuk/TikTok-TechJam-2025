@@ -45,7 +45,6 @@ The policies defined in project are:
 │   ├── featured_datasets/      # Datasets with engineered features
 │   └── modules/                # Python modules for feature engineering policies
 ├── images/                     # Images for the repository
-│   └── Model Architecture.png  # Model architecture diagram
 ├── .gitignore                  # Git ignore file
 ├── final_data_featured_filtered.csv # Final dataset for classification
 ├── final_lda_train_data.csv    # Train data for LDA model
@@ -99,9 +98,9 @@ For a more thorough understanding of the implementation, follow the procedure de
     - The `final_data_featured_filtered.csv` file is the final dataset used for classification.
     - You can run any of the notebooks (`MLP.ipynb`, `RF.ipynb`, `SVM.ipynb`, `XGB.ipynb`) to train and evaluate the corresponding classification model.
 
-## Team Member Contribution
-[Lee Hyunseung](https://www.linkedin.com/in/hyunseung-lee-0128jte-10627kshs/)
+## Team Member
+**Lee Hyunseung** ([LinkedIn](https://www.linkedin.com/in/hyunseung-lee-0128jte-10627kshs/))
 
-[Park Yumin](https://www.linkedin.com/in/yuminpark78/)
+**Park Yumin** ([LinkedIn](https://www.linkedin.com/in/yuminpark78/))
 
-[Yoon Hyukjin](https://www.linkedin.com/in/hyukjiny/)
+**Yoon Hyukjin** ([LinkedIn](https://www.linkedin.com/in/hyukjiny/))
