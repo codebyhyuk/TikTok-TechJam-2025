@@ -9,7 +9,6 @@ import math
 from concurrent.futures import ProcessPoolExecutor
 
 def download_nltk_resources():
-    """Download necessary NLTK resources."""
     nltk.download('punkt')
     try:
         nltk.download('punkt_tab')
@@ -59,22 +58,21 @@ def log_scale(x):
     return math.log(1 + x) / math.log(1 + 2000)
 
 def process_row(row, vectorizer, weights):
-    """Process a single row of the DataFrame to calculate the specificity score."""
     text = row['text']
     
-    # Calculate features
+    # calculate features
     lr = lexical_richness(text)
     ned = named_entity_density(text)
     tfidf = get_average_tfidf_single(text, vectorizer)
     rl = review_length(text)
     
-    # Normalize features
+    # normalize features
     lr_norm = sigmoid(lr)
     ned_norm = sigmoid(ned)
     tfidf_norm = sigmoid(tfidf)
     rl_norm = log_scale(rl)
     
-    # Calculate specificity score
+    # calculate specificity score
     specificity_score = (
         lr_norm * weights['lexical_richness_norm'] +
         ned_norm * weights['named_entity_density_norm'] +
@@ -85,24 +83,13 @@ def process_row(row, vectorizer, weights):
     return specificity_score
 
 def process_row_wrapper(args):
-    """Unpacks arguments and calls the process_row function."""
     row, vectorizer, weights = args
     return process_row(row, vectorizer, weights)
 
 def calculate_specificity_score(df: pd.DataFrame, n_workers: int) -> pd.Series:
-    """
-    Calculates the specificity score for each review in the DataFrame.
-
-    Args:
-        df: The input DataFrame with a 'text' column.
-        n_workers: The number of workers for parallel processing.
-
-    Returns:
-        A pandas Series with the specificity scores.
-    """
     download_nltk_resources()
     
-    # Fit the TfidfVectorizer
+    # fit the TfidfVectorizer
     tfidf_vectorizer = TfidfVectorizer(stop_words='english')
     tfidf_vectorizer.fit(df['text'].fillna(''))
     
@@ -115,8 +102,8 @@ def calculate_specificity_score(df: pd.DataFrame, n_workers: int) -> pd.Series:
     with ProcessPoolExecutor(max_workers=n_workers) as executor:
         data_for_processing = [(row, tfidf_vectorizer, weights) for _, row in df.iterrows()]
     
-        # Pass the wrapper function and the iterable of tuples to executor.map().
-        # The wrapper function receives one tuple at a time and unpacks it.
+        # pass the wrapper function and the iterable of tuples to executor.map().
+        # the wrapper function receives one tuple at a time and unpacks it.
         results = list(executor.map(process_row_wrapper, data_for_processing))
         
     return pd.Series(results, index=df.index)
@@ -126,7 +113,7 @@ if __name__ == '__main__':
     file_path = '/Users/yumin/Documents/GitHub/TikTok-TechJam-2025/data_gpt_labeler/final_data_labeled_1.csv'
     df = pd.read_csv(file_path)
     
-    # For demonstration, using a smaller sample
+    # for demonstration, using a smaller sample
     df_sample = df.sample(n=100, random_state=42).copy()
     
     specificity_scores = calculate_specificity_score(df_sample, n_workers=4)

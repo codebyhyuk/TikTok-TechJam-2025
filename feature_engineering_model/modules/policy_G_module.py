@@ -15,7 +15,7 @@ def get_detoxify_model(model_name: str = "unbiased") -> Detoxify:
     return _MODEL
 
 def init_worker(model_name_for_worker: str):
-    # Preload model once per process
+    # preload model once per process
     get_detoxify_model(model_name_for_worker)
 
 def score_toxicity(text: str, model_name: str = "unbiased") -> Dict[str, float]:
@@ -39,7 +39,7 @@ def score_toxicity(text: str, model_name: str = "unbiased") -> Dict[str, float]:
     probs["S_toxicity"] = float(1.0 - P_max)
     return probs
 
-# --- TOP-LEVEL worker so it is picklable ---
+# top level worker so it is picklable
 def _policy_g_worker(idx_text_model: Tuple[int, str, str]) -> Tuple[int, Dict[str, float]]:
     idx, text, model_name = idx_text_model
     try:
@@ -65,7 +65,7 @@ def compute_policy_g_details_processed(
     cols = ["toxicity","severe_toxicity","obscene","threat","insult","identity_attack","P_max","S_toxicity"]
     out = {c: np.zeros(n, dtype=float) for c in cols}
 
-    # Use initializer to load one model per process (avoid parent warm-up)
+    # use initializer to load one model per process (avoid parent warm-up)
     with ProcessPoolExecutor(
         max_workers=max_workers,
         initializer=init_worker,
@@ -84,7 +84,7 @@ def compute_policy_g_series_processed(
     text_col: str = "text",
     model_name: str = "unbiased",
     max_workers: int = 2,
-    field: str = "S_toxicity",  # keep default consistent with docstring
+    field: str = "S_toxicity", 
 ) -> pd.Series:
     details = compute_policy_g_details_processed(
         df, text_col=text_col, model_name=model_name, max_workers=max_workers
@@ -94,7 +94,7 @@ def compute_policy_g_series_processed(
     return details[field].rename(f"policy_G_{field}")
 
 if __name__ == "__main__":
-    # Example usage guarded for multiprocessing
+    # example usage guarded for multiprocessing
     df = pd.read_csv('/Users/evan/Documents/Projects/TikTok-TechJam-2025/data_gpt_labeler/final_data_2.csv')
     sample_df = df.sample(n=10, random_state=42).reset_index(drop=True).copy()
 
